@@ -1,3 +1,6 @@
+# Run software
+mvn spring-boot:run
+
 # Skip testes
 mvn install -DskipTests
 
