@@ -13,7 +13,7 @@ public interface SondaRepository extends JpaRepository<Sonda, Long> {
     @Query("SELECT u from Sonda u WHERE u.id = :id")
     public List<Sonda> findAllmoreThan(@Param("id") Long id);
 
-    public List<Sonda> findAllmoreThan(Long id);
+    public List<Sonda> findByIdGreaterThan(Long id);
 
     public List<Sonda> findByNameIgnoreCase(String name);
 
@@ -21,4 +21,3 @@ public interface SondaRepository extends JpaRepository<Sonda, Long> {
 
 }
 
-// 20:18

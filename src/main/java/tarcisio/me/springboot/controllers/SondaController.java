@@ -5,15 +5,22 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+
+import tarcisio.me.springboot.controllers.dto.ComandoDTO;
 import tarcisio.me.springboot.model.Sonda;
 import tarcisio.me.springboot.repository.SondaRepository;
+import tarcisio.me.springboot.services.SondaService;
 
 @RestController
 @RequestMapping("/sondas")
@@ -24,7 +31,8 @@ public class SondaController {
     // Chamar a interface
     @Autowired
     private SondaRepository sondaRepository;
-
+    @Autowired
+    private SondaService sondaService;
     // GET
     @GetMapping("/{id}")
     public Sonda sonda(@PathVariable("id") Long id) {
@@ -38,7 +46,17 @@ public class SondaController {
         return null;
     }
 
-    @PostMapping("/") 
+    // ------------------------
+    @PutMapping("/trip/{id}")
+    public ResponseEntity<Sonda> sendTrip(@PathVariable("id") long id, @RequestBody ComandoDTO comando) {
+    System.out.println("chegou");
+    System.out.println("comando controller: " + comando.getComando());
+
+        return ResponseEntity.ok(sondaService.tripSonda(id, comando));
+    }
+    // ------------------------
+
+    @PostMapping()
     public Sonda sonda(@RequestBody Sonda sonda) {
         this.sondaRepository.save(sonda);
         sondas.add(sonda);
@@ -50,9 +68,15 @@ public class SondaController {
         return this.sondaRepository.findAll();
     }
 
-    // // {} é para receber como parametro e PathVariable
+    // {} é para receber como parametro e PathVariable
     @GetMapping("/list/{id}")
     public List<Sonda> listById(@PathVariable("id") Long id) {
+        // TODO - Lucas
+        // Optional<Sonda> sondaList = this.sondaRepository.findAllmoreThan(id);
+        // if (!sondaList.isPresent()) {
+            // return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Favor passar o id da sonda.");
+        // }
+        // return ResponseEntity.status(HttpStatus.OK).body(sondaList.get());
         return this.sondaRepository.findAllmoreThan(id);
     }
 
