@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
-import tarcisio.me.springboot.controllers.dto.ComandoDTO;
+import tarcisio.me.springboot.controllers.dto.in.CommandDTO;
 import tarcisio.me.springboot.model.Sonda;
 import tarcisio.me.springboot.repository.SondaRepository;
 import tarcisio.me.springboot.services.SondaService;
@@ -48,11 +48,10 @@ public class SondaController {
 
     // ------------------------
     @PutMapping("/trip/{id}")
-    public ResponseEntity<Sonda> sendTrip(@PathVariable("id") long id, @RequestBody ComandoDTO comando) {
-    System.out.println("chegou");
-    System.out.println("comando controller: " + comando.getComando());
+    public ResponseEntity<Sonda> sendTrip(@PathVariable("id") long id, @RequestBody CommandDTO CommandDTO) {
+    System.out.println("Comando Controller: " + CommandDTO.getCommand());
 
-        return ResponseEntity.ok(sondaService.tripSonda(id, comando));
+        return ResponseEntity.ok(sondaService.runTrip(id, CommandDTO));
     }
     // ------------------------
 
