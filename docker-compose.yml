@@ -1,27 +1,115 @@
 version: '3'
+
 services:
-  spring_boot_com_mysql:
+
+  # Nginx
+  web:
+    container_name: elo7_nginx
+    restart: unless-stopped
+    env_file: docker/.env
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      elo7-net:
+        ipv4_address: 192.168.28.10
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./docker/config/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/config/nginx/certs:/etc/nginx/certs
+      - ./docker/config/nginx/www:/www
+
+  # Springboot
+  springboot:
+    container_name: elo7_spring
+    restart: unless-stopped
+    env_file: docker/.env
+    image: chephei/spring
     build:
       context: ./
       dockerfile: ./Dockerfile
-    image: spring_boo_com_mysql/api
     ports:
       - '8080:8080'
       - '5005:5005'
+    networks:
+      elo7-net:
+        ipv4_address: 192.168.28.20
     environment:
-      - ADDITIONAL_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Xmx1G -Xms128m -XX:MaxMetaspaceSize=128m
-      - PROFILE=dev
+      - ADDITIONAL_OPTS=${ADDITIONAL_OPTS:-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Xmx1G -Xms128m -XX:MaxMetaspaceSize=128m}
+      - PROFILE=${PROFILE:-dev}
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/login
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-spring_boot}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-passwd}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING-MVC_PATHMATCH_MATCHING-STRATEGY=ant_path_matcher
     links:
       - db
-
-  db:
-    image: mysql:5.6
-    ports:
-      - '3306:3306'
-    environment:
-      - MYSQL_ROOT_HOST=%
-      - MYSQL_DATABASE=spring_boot_mysql
-      - MYSQL_USER=root
-      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+  
+  # Docker logs Dozzle
+  logs:
+    container_name: elo7_logs
+    image: amir20/dozzle:latest
+    env_file: docker/.env
+    networks:
+      elo7-net:
+        ipv4_address: 192.168.28.40
     volumes:
-      - ./docker/volume_mysql:/var/lib/mysql
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9999:1224
+    environment:
+      - DOZZLE_ADDR=192.168.28.40:1224
+      - DOZZLE_BASE=/logs
+
+  # DB
+  postgres:
+    container_name: elo7_postgres
+    image: postgres
+    env_file: docker/.env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-passwd}
+      POSTGRES_DB: ${POSTGRES_DB:-springboot}
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      elo7-net:
+        ipv4_address: 192.168.28.40
+    restart: unless-stopped
+
+  # PgAdmin
+  pgadmin:
+    container_name: elo7_pgadmin
+    image: dpage/pgadmin4
+    env_file: docker/.env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-elo7@tarcisio.me}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-passwd}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_PORT:-10088}:80"
+    networks:
+      elo7-net:
+        ipv4_address: 192.168.28.40
+    restart: unless-stopped
+
+# Network config
+networks:
+  elo7-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.28.0/24
+
+# Volumes em docker
+volumes:
+    postgres:
+    pgadmin:
