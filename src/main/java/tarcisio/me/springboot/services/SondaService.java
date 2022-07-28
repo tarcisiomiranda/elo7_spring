@@ -1,17 +1,17 @@
 package tarcisio.me.springboot.services;
 
-import java.util.Optional;
+import tarcisio.me.springboot.repository.SondaRepository;
 
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tarcisio.me.springboot.dto.in.CommandDTO;
+import tarcisio.me.springboot.model.Sonda;
+
+import java.util.Optional;
 import java.util.Arrays;
 import java.util.List;
-
-import tarcisio.me.springboot.controllers.dto.in.CommandDTO;
-import tarcisio.me.springboot.model.Sonda;
-import tarcisio.me.springboot.repository.SondaRepository;
 
 @Service
 public class SondaService {
@@ -20,7 +20,7 @@ public class SondaService {
     public Sonda findSonda(Long id) {
         Optional<Sonda> obj = sondaRepository.findById(id);
         return obj.orElseThrow(() -> new ObjectNotFoundException(id,
-        "Sonda não encontrada "+ id));
+        "Sonda not found "+ id));
     }
 
     public Sonda runTrip(Long id, CommandDTO commandDTO) {
