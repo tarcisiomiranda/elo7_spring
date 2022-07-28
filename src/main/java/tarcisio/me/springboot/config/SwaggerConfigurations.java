@@ -12,10 +12,12 @@ public class SwaggerConfigurations {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.ta2.probechallenge"))
-                .paths(PathSelectors.ant("/**"))
-                .build();
+            // .host("https://sonda.tarcisio.me")
+            .groupName("Sonda Trip")
+            .select()
+            .apis(RequestHandlerSelectors.basePackage("tarcisio.me.springboot"))
+            .paths(PathSelectors.ant("/**"))
+            .build();
     }
     
 }

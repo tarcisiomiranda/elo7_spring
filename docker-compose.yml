@@ -6,7 +6,8 @@ services:
   web:
     container_name: elo7_nginx
     restart: unless-stopped
-    env_file: docker/.env
+    env_file: 
+      - ./docker/.env
     image: nginx:latest
     ports:
       - "80:80"
@@ -24,8 +25,9 @@ services:
   springboot:
     container_name: elo7_spring
     restart: unless-stopped
-    env_file: docker/.env
-    image: chephei/spring
+    env_file: 
+      - ./docker/.env
+    image: chephei/spring:1.0
     build:
       context: ./
       dockerfile: ./Dockerfile
@@ -36,69 +38,73 @@ services:
       elo7-net:
         ipv4_address: 192.168.28.20
     environment:
-      - ADDITIONAL_OPTS=${ADDITIONAL_OPTS:-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Xmx1G -Xms128m -XX:MaxMetaspaceSize=128m}
-      - PROFILE=${PROFILE:-dev}
-      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/login
-      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-spring_boot}
-      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-passwd}
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SPRING-MVC_PATHMATCH_MATCHING-STRATEGY=ant_path_matcher
+      # - ADDITIONAL_OPTS=${ADDITIONAL_OPTS}
+      # - PROFILE=${PROFILE}
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT="org.hibernate.dialect.PostgreSQLDialect"
+      - SPRING_DATASOURCE_URL="jdbc:postgresql://postgres:5432/springboot"
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING-MVC_PATHMATCH_MATCHING-STRATEGY="ant_path_matcher"
+      - SPRING_JPA_HIBERNATE_DDL_AUTO="update"
     links:
-      - db
+      - postgres
   
   # Docker logs Dozzle
   logs:
     container_name: elo7_logs
+    restart: unless-stopped
+    env_file: 
+      - ./docker/.env
     image: amir20/dozzle:latest
-    env_file: docker/.env
     networks:
       elo7-net:
-        ipv4_address: 192.168.28.40
+        ipv4_address: 192.168.28.30
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 9999:1224
     environment:
-      - DOZZLE_ADDR=192.168.28.40:1224
+      - DOZZLE_ADDR=192.168.28.30:1224
       - DOZZLE_BASE=/logs
 
   # DB
   postgres:
     container_name: elo7_postgres
+    restart: unless-stopped
+    env_file: 
+      - ./docker/.env
     image: postgres
-    env_file: docker/.env
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-admin}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-passwd}
-      POSTGRES_DB: ${POSTGRES_DB:-springboot}
-      PGDATA: /data/postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - PGDATA=/data/postgres
     volumes:
-      - postgres:/data/postgres
+      - elo7postgres:/data/postgres
     ports:
       - "5432:5432"
     networks:
       elo7-net:
         ipv4_address: 192.168.28.40
-    restart: unless-stopped
 
   # PgAdmin
   pgadmin:
     container_name: elo7_pgadmin
+    restart: unless-stopped
+    env_file: 
+      - ./docker/.env
     image: dpage/pgadmin4
-    env_file: docker/.env
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-elo7@tarcisio.me}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-passwd}
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${POSTGRES_PASSWORD}
+      - PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE}
     volumes:
-      - pgadmin:/var/lib/pgadmin
+      - elo7pgadmin:/var/lib/pgadmin
     ports:
       - "${PGADMIN_PORT:-10088}:80"
     networks:
       elo7-net:
-        ipv4_address: 192.168.28.40
-    restart: unless-stopped
+        ipv4_address: 192.168.28.50
 
 # Network config
 networks:
@@ -111,5 +117,5 @@ networks:
 
 # Volumes em docker
 volumes:
-    postgres:
-    pgadmin:
+    elo7postgres:
+    elo7pgadmin:
