@@ -15,6 +15,7 @@ services:
     networks:
       elo7-net:
         ipv4_address: 192.168.28.10
+    # command: cat /etc/nginx/conf.d/main.conf
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./docker/config/nginx/conf.d:/etc/nginx/conf.d
@@ -57,7 +58,7 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO:"update"
     links:
       - db
-  
+
   # Docker logs Dozzle
   logs:
     container_name: elo7_logs
@@ -108,9 +109,9 @@ services:
       - PGADMIN_DEFAULT_EMAIL:${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD:${POSTGRES_PASSWORD}
       - PGADMIN_CONFIG_SERVER_MODE:${PGADMIN_CONFIG_SERVER_MODE}
+      - SCRIPT_NAME:/pgadmin
     volumes:
       - elo7pgadmin:/var/lib/pgadmin
-      # /pgadmin4/servers.json
       - ./docker/config/postgres/servers.json:/pgadmin4/servers.json
     ports:
       - "${PGADMIN_PORT:-10089}:80"
