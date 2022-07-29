@@ -15,15 +15,16 @@ services:
     networks:
       elo7-net:
         ipv4_address: 192.168.28.10
-    # command: cat /etc/nginx/conf.d/main.conf
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ./docker/config/nginx/conf.d:/etc/nginx/conf.d
-      - ./docker/config/nginx/certs:/etc/nginx/certs
-      - ./docker/config/nginx/www:/www
     environment:
-      - NGINX_PRV:${NGINX_PRV:-privkey.pem;}
-      - NGINX_PUB:${NGINX_PUB:-fullchain.pem;}
+      - NGINX_CRT:${NGINX_CERTS}
+      - NGINX_CFG:${CONFIG_MAIN}
+    volumes:
+      # - "${NGINX_CFG}:/etc/nginx/conf.d/main.conf"
+      # - ${NGINX_CRT}:/etc/nginx/certs
+      - ./docker/config/nginx/conf.d/main.conf:/etc/nginx/conf.d/main.conf
+      - ./docker/config/nginx/certs/dev:/etc/nginx/certs
+      - ./docker/config/nginx/www:/www
+      - /etc/localtime:/etc/localtime:ro
 
   # Springboot
   springboot:
@@ -44,12 +45,6 @@ services:
     volumes:
       - ./target/springboot-1.0.1-tarcisio.jar:/app.jar
     environment:
-      # - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT:"org.hibernate.dialect.MySQLDialect"
-      # - SPRING_DATASOURCE_URL:"jdbc:mysql://db:3306/springboot"
-      # - SPRING_DATASOURCE_USERNAME:${MYSQL_USER}
-      # - SPRING_DATASOURCE_PASSWORD:${MYSQL_PASSWORD}
-      # - SPRING-MVC_PATHMATCH_MATCHING-STRATEGY:"ant_path_matcher"
-      # - SPRING_JPA_HIBERNATE_DDL_AUTO:"update"
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT:"org.hibernate.dialect.PostgreSQLDialect"
       - SPRING_DATASOURCE_URL:"jdbc:postgresql://db:5432/springboot"
       - SPRING_DATASOURCE_USERNAME:${POSTGRES_USER}
@@ -89,7 +84,6 @@ services:
       - POSTGRES_PASSWORD:${POSTGRES_PASSWORD}
       - POSTGRES_DB:${POSTGRES_DB}
       - PGDATA:/data/postgres
-    # command: psql -h hostname -d databasename -U username -f file.sql
     volumes:
       - ./docker/data/postgres/springboot.sql:/docker-entrypoint-initdb.d/springboot.sql
     ports:
@@ -119,46 +113,6 @@ services:
       elo7-net:
         ipv4_address: 192.168.28.50
 
-  # # Mariadb
-  # db:
-  #   container_name: elo7_db
-  #   restart: unless-stopped
-  #   env_file: 
-  #     - ./docker/.env
-  #   image: mariadb:10.3.34
-  #   # image: mariadb:10.5.16
-  #   # image: yobasystems/alpine-mariadb
-  #   # image: mysql:8.0.30-debian
-  #   # environment:
-  #     # - MYSQL_ROOT_PASSWORD:${JAVA_MYSQL_ROOT_PASSWORD}
-  #     # - MYSQL_DATABASE:${JAVA_MYSQL_DATABASE}
-  #   # command: --default-authentication-plugin=mysql_native_password
-  #   # volumes:
-  #     # - ./docker/data/mariadb/springboot.sql:/docker-entrypoint-initdb.d/springboot.sql
-  #     # - ./docker/config/mariadb:/etc/my.cnf.d
-  #   ports:
-  #     - "3308:3306"
-  #   networks:
-  #     elo7-net:
-  #       ipv4_address: 192.168.28.60
-
-  # phpmyadmin
-  pma:
-    container_name: elo7_pma
-    restart: unless-stopped
-    env_file: 
-      - ./docker/.env
-    image: phpmyadmin:5.1.0-apache
-    # environment:
-    #   - PMA_HOST:${JAVA_PMA_HOST}
-    #   - PMA_USER:${JAVA_MYSQL_USER}
-    #   - PMA_PASSWORD:${JAVA_MYSQL_PASSWORD}
-    ports:
-      - "10080:80"
-    networks:
-      elo7-net:
-        ipv4_address: 192.168.28.70
-
   # Flask
   flask:
     container_name: elo7_flask
@@ -174,7 +128,7 @@ services:
       - ./docker/data/python:/src/app
     networks:
       elo7-net:
-        ipv4_address: 192.168.28.80
+        ipv4_address: 192.168.28.60
 
 # Network config
 networks:

@@ -12,7 +12,7 @@ public class SwaggerConfigurations {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
-            // .host("https://sonda.tarcisio.me")
+            .host("192.168.28.10:8080")
             .groupName("Sonda Trip")
             .select()
             .apis(RequestHandlerSelectors.basePackage("tarcisio.me.springboot"))
