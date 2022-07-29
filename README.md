@@ -3,7 +3,7 @@
 ## Recursos
 - [API](#api)
 - [Springboot](#Springboot)
-- [Swagger](#grafana)
+- [Swagger](#Swagger)
 - [Postgres](#Postgres)
 - [Nginx](#Nginx)
 - [Flask](#Flask)
