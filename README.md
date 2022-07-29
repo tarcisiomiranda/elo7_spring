@@ -36,6 +36,7 @@ O <a href="https://dozzle.dev/">Dozzle</a> é um aplicativo simples e responsivo
 ## Instalação
 Faça a copia do arquivos .env e faça as edições necessarias para dev ou prod
 ```bash
+$ mvn clean && mvn clean package
 $ cp docker/.env.example docker/.env
 $ docker-compose --env-file=docker/.env up -d
 ```
