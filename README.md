@@ -83,7 +83,7 @@ $ curl http://[ip]/sondas/list/{id}
 
 #### Realizar viagem com a Sonda
 `POST /sondas/trip/{id}` 
-<br/>{id : Integer, name : String}
+<br/>{id : Integer, command : String}
 ```
 $ curl -X POST "http://192.168.28.10:8080/sondas/trip/{id}" -H  "accept: */*" -H  "Content-Type: application/json" -d "{  \"command\": \"LMLMLMLMM\"}"
 ```
