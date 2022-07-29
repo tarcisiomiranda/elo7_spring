@@ -27,7 +27,6 @@ public class SondaService {
         List<String> commands = Arrays.asList(commandDTO.getCommand().split(""));
         Sonda sonda = findSonda(id);
 
-        // Colocar IF ternario aqui
         commands.forEach(command -> {
             if(command.equals("M")){
                 forward(sonda);
