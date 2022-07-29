@@ -41,11 +41,11 @@ $ mvn clean package
 $ cp docker/.env.example docker/.env
 $ docker-compose --env-file=docker/.env up -d
 ```
-### Amb dev
+### Amb DEV
 
 ```
-$ docker-compose --env-file=docker/.env up -d db
 $ cp docker/.env.example docker/.env
+$ docker-compose --env-file=docker/.env up -d db
 $ mvn spring-boot:run
 ```
 
