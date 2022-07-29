@@ -35,10 +35,20 @@ O <a href="https://dozzle.dev/">Dozzle</a> é um aplicativo simples e responsivo
 
 ## Instalação
 Faça a copia do arquivos .env e faça as edições necessarias para dev ou prod
+### Amb PRD
 ```bash
+$ mvn clean package
 $ cp docker/.env.example docker/.env
 $ docker-compose --env-file=docker/.env up -d
 ```
+### Amb dev
+
+```
+$ docker-compose --env-file=docker/.env up -d db
+$ cp docker/.env.example docker/.env
+$ mvn spring-boot:run
+```
+
 
 ## Configuração
 É necessário a criação do usuário das sondas para iniciarmos a viagem <br/>

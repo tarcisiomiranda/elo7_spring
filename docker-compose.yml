@@ -87,7 +87,7 @@ services:
     volumes:
       - ./docker/data/postgres/springboot.sql:/docker-entrypoint-initdb.d/springboot.sql
     ports:
-      - "5433:5432"
+      - "5432:5432"
     networks:
       elo7-net:
         ipv4_address: 192.168.28.40
