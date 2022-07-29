@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- <link rel="stylesheet" href="public/bootstrap.min.css"/> -->
+<!-- <script src="public/bootstrap.min.js"></script> -->
+<title>Sondas</title>
+<style>
+    body {
+      margin: 40px auto;
+      max-width: 650px;
+      line-height: 1.6;
+      font-size: 18px;
+      font-family: "Courier New", Courier, monospace;
+      color: #444;
+      padding: 0 10px;
+    }
+    h2 {
+      line-height: 1.2;
+    }
+</style>
+</head>
+
+<body>
+
+  {% if todas %}
+
+  <h2>{{ sonda1.capitalize() }}</h2>
+    <p>
+      O destino da viagem é: <br/>
+      {{ res1 }}
+    </p><hr>
+  <h2>{{ sonda2.capitalize() }}</h2>
+    <p>
+      O destino da viagem é: <br/>
+      {{ res2 }}
+    </p>
+
+  {% else %}
+
+    <h2>{{ sonda.capitalize() }}</h2>
+    <p>
+      O destino da viagem é: <br/>
+      {{ res }}
+    </p>
+
+  {% endif %}
+
+  </body>
+</html>
