@@ -25,12 +25,12 @@ public class SondaController {
 
     private List<Sonda> sondas = new ArrayList<>();
 
-    // Chamar a interface
     @Autowired
     private SondaRepository sondaRepository;
+
     @Autowired
     private SondaService sondaService;
-    // GET
+
     @GetMapping("/{id}")
     public Sonda sonda(@PathVariable("id") Long id) {
         System.out.println("Sonda ID: " + id);
@@ -42,14 +42,13 @@ public class SondaController {
         return null;
     }
 
-    // POST
     @PostMapping("/trip/{id}")
     public ResponseEntity<Sonda> sendTrip(
     @PathVariable("id")
     @ApiParam(name = "id", value = "ID da Sonda.", example = "1") Long id,
-    @RequestBody CommandDTO CommandDTO) { 
-    System.out.println("Comando Controller: " + CommandDTO.getCommand());
-
+    @RequestBody CommandDTO CommandDTO
+    ) { 
+        System.out.println("Comando Controller: " + CommandDTO.getCommand());
         return ResponseEntity.ok(sondaService.runTrip(id, CommandDTO));
     }
 
