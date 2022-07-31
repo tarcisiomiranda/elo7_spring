@@ -104,7 +104,7 @@ $ curl -X POST "http://192.168.28.10:8080/sondas/trip/{id}" -H  "accept: */*" -H
 
 ## FrontEnd
 
-#### Tela inciar para consumi os serviços e executar as viagens das Sondas
+#### Tela inciar para consumir os serviços e executar as viagens das Sondas
 
 ![alt](https://i.imgur.com/7qM0GFL.png)
 
