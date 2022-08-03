@@ -126,6 +126,6 @@ $ curl -X POST "http://192.168.28.10:8080/sondas/trip/{id}" -H  "accept: */*" -H
 
 👤 **Tarcisio Miranda**
 
-- Linkdin: [Linkedin](https://www.linkedin.com/in/tarcisio-miranda-967106229/)
+- Linkdin: [Linkedin](www.linkedin.com/in/mirandatarcisio)
 - Email: [eu@tarcisio.me](eu@tarcisio.me)
 
